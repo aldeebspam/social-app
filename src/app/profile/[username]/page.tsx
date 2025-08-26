@@ -7,15 +7,15 @@ import {
 import { notFound } from "next/navigation";
 import ProfilePageClient from "./ProfilePageClient";
 
-interface PageProps {
+type ProfilePageProps = {
   params: {
     username: string;
   };
-}
+};
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: ProfilePageProps) {
   const user = await getProfileByUsername(params.username);
-  if (!user) return;
+  if (!user) return {};
 
   return {
     title: `${user.name ?? user.username}`,
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-async function ProfilePageServer({ params }: PageProps) {
+async function ProfilePageServer({ params }: ProfilePageProps) {
   const user = await getProfileByUsername(params.username);
 
   if (!user) notFound();
