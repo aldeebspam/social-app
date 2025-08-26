@@ -6,25 +6,19 @@ import {
 } from "@/actions/profile.action";
 import { notFound } from "next/navigation";
 import ProfilePageClient from "./ProfilePageClient";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
 type PageProps = {
-  params: Promise<{
-    username: string;
-  }>;
+  params: { username: string };
 };
 
-export async function generateMetadata(
-  { params }: PageProps,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const { username } = await params; 
-  const user = await getProfileByUsername(username);
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const user = await getProfileByUsername(params.username);
 
   if (!user) {
-    return {
-      title: "User not found",
-    };
+    return { title: "User not found" };
   }
 
   return {
@@ -34,8 +28,7 @@ export async function generateMetadata(
 }
 
 export default async function ProfilePage({ params }: PageProps) {
-  const { username } = await params; 
-  const user = await getProfileByUsername(username);
+  const user = await getProfileByUsername(params.username);
 
   if (!user) notFound();
 
