@@ -8,8 +8,16 @@ import PostCard from './PostCard';
 type Post = Awaited<ReturnType<typeof getPosts>>[number];
 
 export default function HomeClientWrapper({ dbUserId }: { dbUserId: string | null }) {
-  const { user, isLoaded } = useUser(); // Changed: use 'user' instead of 'isSignedIn'
+  const { user, isSignedIn, isLoaded } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
+
+  // Debug logging
+  console.log('HomeClientWrapper render:', { 
+    user: !!user, 
+    isSignedIn, 
+    isLoaded, 
+    dbUserId 
+  });
 
   const fetchPosts = async () => {
     const data = await getPosts();
@@ -18,7 +26,7 @@ export default function HomeClientWrapper({ dbUserId }: { dbUserId: string | nul
 
   useEffect(() => {
     fetchPosts();
-  }, [user]); // Changed: depend on 'user' instead of 'isSignedIn'
+  }, [isSignedIn]);
 
   if (!isLoaded) {
     return <div className="lg:col-span-6 space-y-6">Loading...</div>;
@@ -26,7 +34,13 @@ export default function HomeClientWrapper({ dbUserId }: { dbUserId: string | nul
 
   return (
     <div className="lg:col-span-6 space-y-6">
-      {user ? <CreatePost /> : null} {/* Changed: check 'user' instead of 'isSignedIn' */}
+      {/* Debug info */}
+      <div className="text-xs text-muted-foreground p-2 bg-muted rounded mb-4">
+        Debug: User: {user ? 'Yes' : 'No'}, SignedIn: {isSignedIn ? 'Yes' : 'No'}, Loaded: {isLoaded ? 'Yes' : 'No'}
+      </div>
+      
+      {isSignedIn ? <CreatePost /> : null}
+      
       {posts.map(post => (
         <PostCard key={post.id} post={post} dbUserId={dbUserId} />
       ))}
