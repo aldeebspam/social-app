@@ -12,11 +12,14 @@ import toast from "react-hot-toast";
 import ImageUpload from "./ImageUpload";
 
 function CreatePost() {
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
+
+  // Add early return if not signed in
+  if (!isSignedIn) return null;
 
   const handleSubmit = async () => {
     if (!content.trim() && !imageUrl) return;
