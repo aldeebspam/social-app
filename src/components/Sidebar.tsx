@@ -1,7 +1,7 @@
-import { currentUser } from '@clerk/nextjs/server'
-import React from 'react'
+'use client';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { getUserByClerkId } from '@/actions/user.action';
 import Link from 'next/link';
@@ -9,13 +9,30 @@ import { Avatar, AvatarImage } from './ui/avatar';
 import { Separator } from './ui/separator';
 import { LinkIcon, MapPinIcon } from 'lucide-react';
 
-async function Sidebar() {
+function Sidebar() {
+  const { user: authUser, isLoaded } = useUser();
+  const [user, setUser] = useState<any>(null);
 
-    const authUser = await currentUser();
-    if (!authUser) return <UnAuthenticatedSidebar />;
+  useEffect(() => {
+    if (authUser) {
+      getUserByClerkId(authUser.id).then(setUser);
+    }
+  }, [authUser]);
 
-    const user = await getUserByClerkId(authUser.id);
-    if(!user) return null;
+  if (!isLoaded) {
+    return (
+      <div className="sticky top-20">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="h-40 bg-muted animate-pulse rounded"></div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!authUser) return <UnAuthenticatedSidebar />;
+  if (!user) return null;
 
   return (
     <div className="sticky top-20">
@@ -74,7 +91,7 @@ async function Sidebar() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 export default Sidebar;
