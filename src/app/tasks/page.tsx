@@ -1,16 +1,11 @@
-import WhoToFollow from '@/components/WhoToFollow';
-import HomeClientWrapper from '@/components/HomeClientWrapper';
+async function TasksPage() {
+  const response = await fetch("http://localhost:3000/api/tasks", {
+    cache: "no-store",
+  });
+  const tasks = await response.json();
 
-// Force dynamic rendering to prevent static generation errors
-export const dynamic = 'force-dynamic';
+  console.log("tasks:", tasks);
 
-export default async function TasksPage() {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-      <HomeClientWrapper dbUserId={null} />
-      <div className="hidden lg:block lg:col-span-4 sticky top-20">
-        <WhoToFollow />
-      </div>
-    </div>
-  );
+  return <div>TasksPage</div>;
 }
+export default TasksPage;
