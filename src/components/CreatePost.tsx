@@ -18,9 +18,6 @@ function CreatePost() {
   const [isPosting, setIsPosting] = useState(false);
   const [showImageUpload, setShowImageUpload] = useState(false);
 
-  // Add early return if not signed in
-  if (!isSignedIn) return null;
-
   const handleSubmit = async () => {
     if (!content.trim() && !imageUrl) return;
 
@@ -28,12 +25,10 @@ function CreatePost() {
     try {
       const result = await createPost(content, imageUrl);
       if (result?.success) {
-        //reset the form
         setContent("");
         setImageUrl("");
         setShowImageUpload(false);
-
-        toast.success("Post Created Succesfully");
+        toast.success("Post Created Successfully");
       }
     } catch (error) {
       console.error("Failed to create post:", error);
@@ -42,6 +37,7 @@ function CreatePost() {
       setIsPosting(false);
     }
   };
+
   return (
     <Card className="mb-6">
       <CardContent className="pt-3">
@@ -104,7 +100,6 @@ function CreatePost() {
               )}
             </Button>
           </div>
-          {/* HANDLE IMAGE UPLOADS */}
         </div>
       </CardContent>
     </Card>

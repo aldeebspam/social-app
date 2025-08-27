@@ -1,15 +1,21 @@
+'use client';
 import Link from "next/link";
 import React from "react";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
-import { currentUser } from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 import { syncUser } from "@/actions/user.action";
 
-async function Navbar() {
+function Navbar() {
+  const { user, isLoaded } = useUser();
   
-  const user = await currentUser();
-  if(user) await syncUser(); //post
-  
+  useEffect(() => {
+    if (user) {
+      syncUser();
+    }
+  }, [user]);
+
   return (
     <nav
       className="sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50"
