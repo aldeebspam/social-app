@@ -16,20 +16,34 @@ function HomeContent({
   initialPosts: Post[];
   dbUserId: string | null;
 }) {
-  const { user, isLoaded } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [posts, setPosts] = useState(initialPosts);
+  const [currentUser, setCurrentUser] = useState(initialUser);
 
-  // Update posts when user changes
+  // Update current user when Clerk user state changes
   useEffect(() => {
-    if (isLoaded && user !== initialUser) {
-      // Re-fetch posts or update state as needed
-      // You might want to call an API endpoint here
+    if (isLoaded) {
+      setCurrentUser(user);
     }
-  }, [user, isLoaded, initialUser]);
+  }, [user, isLoaded]);
+
+  // Show loading state while Clerk is initializing
+  if (!isLoaded) {
+    return (
+      <>
+        {initialUser ? <CreatePost /> : null}
+        <div className="space-y-6">
+          {initialPosts.map((post) => (
+            <PostCard key={post.id} post={post} dbUserId={dbUserId} />
+          ))}
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      {user ? <CreatePost /> : null}
+      {isSignedIn ? <CreatePost /> : null}
       
       <div className="space-y-6">
         {posts.map((post) => (
