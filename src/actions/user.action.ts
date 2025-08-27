@@ -100,11 +100,42 @@ export async function getRandomUsers(){
                 _count:{
                     select:{
                         followers: true,
+                        posts: true, // Add posts count
                     }
                 }
             },
-            take: 3,
+            take: 5, // Increase from 3 to 5 to have more options
+            orderBy: {
+                createdAt: 'desc' // Show newest users first
+            }
         })
+        
+        // If we don't have enough users, get any users (except current user)
+        if (randomUsers.length < 3) {
+            const fallbackUsers = await prisma.user.findMany({
+                where: {
+                    NOT: { id: userId }
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    username: true,
+                    image: true,
+                    _count: {
+                        select: {
+                            followers: true,
+                            posts: true,
+                        }
+                    }
+                },
+                take: 3,
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            });
+            return fallbackUsers;
+        }
+        
         return randomUsers;
     } catch (error) {
         console.log("Error fetching random users", error);

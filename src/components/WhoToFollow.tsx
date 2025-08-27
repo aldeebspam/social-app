@@ -7,8 +7,14 @@ import FollowButton from "./FollowButton";
 
 async function WhoToFollow() {
   const users = await getRandomUsers();
+  
+  // Add this debug line temporarily
+  console.log("WhoToFollow users:", users);
 
-  if (users.length === 0) return null;
+  if (users.length === 0) {
+    console.log("No users found in WhoToFollow");
+    return null;
+  }
 
   return (
     <Card>
