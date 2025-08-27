@@ -5,18 +5,18 @@ import { getPosts } from '@/actions/post.action';
 import CreatePostWrapper from './CreatePostWrapper';
 import PostCard from './PostCard';
 
-// Define the Post type
 type Post = Awaited<ReturnType<typeof getPosts>>[number];
 
 export default function HomeClientWrapper({ dbUserId }: { dbUserId: string | null }) {
   const { isSignedIn } = useUser();
-  const [posts, setPosts] = useState<Post[]>([]); // Fix: Add proper type
+  const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = async () => {
     const data = await getPosts();
     setPosts(data);
   };
 
+  
   useEffect(() => {
     fetchPosts();
   }, [isSignedIn]);
