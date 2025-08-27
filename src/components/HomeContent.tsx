@@ -8,32 +8,29 @@ import PostCard from "./PostCard";
 type Post = any; // Replace with your actual post type
 
 function HomeContent({ 
-  initialUser, 
-  initialPosts, 
+  posts, 
   dbUserId 
 }: { 
-  initialUser: any;
-  initialPosts: Post[];
+  posts: Post[];
   dbUserId: string | null;
 }) {
   const { user, isLoaded, isSignedIn } = useUser();
-  const [posts, setPosts] = useState(initialPosts);
-  const [currentUser, setCurrentUser] = useState(initialUser);
+  const [currentPosts, setCurrentPosts] = useState(posts);
 
-  // Update current user when Clerk user state changes
+  // Refresh posts when user signs in/out
   useEffect(() => {
     if (isLoaded) {
-      setCurrentUser(user);
+      // You can add logic here to refresh posts if needed
+      // For now, we'll just use the initial posts
     }
-  }, [user, isLoaded]);
+  }, [isLoaded, isSignedIn]);
 
   // Show loading state while Clerk is initializing
   if (!isLoaded) {
     return (
       <>
-        {initialUser ? <CreatePost /> : null}
         <div className="space-y-6">
-          {initialPosts.map((post) => (
+          {posts.map((post) => (
             <PostCard key={post.id} post={post} dbUserId={dbUserId} />
           ))}
         </div>
@@ -46,7 +43,7 @@ function HomeContent({
       {isSignedIn ? <CreatePost /> : null}
       
       <div className="space-y-6">
-        {posts.map((post) => (
+        {currentPosts.map((post) => (
           <PostCard key={post.id} post={post} dbUserId={dbUserId} />
         ))}
       </div>
