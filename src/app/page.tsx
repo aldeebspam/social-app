@@ -3,7 +3,14 @@ import WhoToFollow from '@/components/WhoToFollow';
 import HomeClientWrapper from '@/components/HomeClientWrapper';
 
 export default async function Home() {
-  const dbUserId = await getDbUserId();
+  let dbUserId: string | null = null;
+  
+  try {
+    dbUserId = await getDbUserId();
+  } catch (error) {
+    // User is not authenticated, this is normal
+    console.log('User not authenticated, continuing without dbUserId');
+  }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
