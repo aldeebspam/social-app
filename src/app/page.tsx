@@ -1,22 +1,9 @@
-'use client';
-
-import HomeClientWrapper from '@/components/HomeClientWrapper';
-import WhoToFollow from '@/components/WhoToFollow';
 import { getDbUserId } from '@/actions/user.action';
-import { useEffect, useState } from 'react';
+import WhoToFollow from '@/components/WhoToFollow';
+import HomeClientWrapper from '@/components/HomeClientWrapper';
 
-export default function Home() {
-  const [dbUserId, setDbUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchDbUserId = async () => {
-      const id = await getDbUserId();
-      setDbUserId(id);
-    };
-    fetchDbUserId();
-  }, []);
-
-  if (!dbUserId) return <p>Loading...</p>;
+export default async function Home() {
+  const dbUserId = await getDbUserId();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
